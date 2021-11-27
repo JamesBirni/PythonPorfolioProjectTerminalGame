@@ -21,9 +21,6 @@ def start():
         time.sleep(2)
     time.sleep(5)
     clearConsole()
-    
-def setup():
-    pass
 
 def movingDisplay(ammount):
     for i in range(ammount):
@@ -34,4 +31,7 @@ def clearConsole():
     if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
         command = 'cls'
     os.system(command)
-start()
+def main():
+    start()
+if __name__ == "__main__":
+    main()
