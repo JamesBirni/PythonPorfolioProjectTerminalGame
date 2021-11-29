@@ -1,10 +1,12 @@
 To-Do List
--Make Board parent class
- - Make a-j dictionary
- - Make 2D array for the board
+    -Make Board parent class
+        - Make a-j dictionary
+        - Make 2D array for the board
 -Make ShipBoard class extends Board
- - In constructor create a new dictionary with all the ships and an empty 2D array for each ship location
+    - In constructor create a new dictionary with all the ships and an empty 2D array for each ship location
  - Make method to set up ships, that will fill the 2D array of the location of every ship
+    -Show board to player
+    -
  - Make method for when ship is hit on board
  - Make method for when all ships are hit
  - Make ifShipXY method that X,Y premeters to check if a ship is at an XY cordinate

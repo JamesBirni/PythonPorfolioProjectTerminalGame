@@ -1,5 +1,7 @@
 import time
-import os
+from ConsoleMethods import clearConsole
+from ConsoleMethods import movingDisplay
+from Board import ShipBoard
 ruleStrings = ["The rules of Destroyer is simple", "The game begins with each player chosing where to place their ships",
     "On a 10 by 10 grid going from a-j and 1-10", "Each player will have 5 ships", "1 Carrier of length 5",
     "1 Battleship of length 4", "1 Cruiser of length 3", "1 Submarine of length 3", "1 Destroyer of length 1",
@@ -18,20 +20,16 @@ def start():
     movingDisplay(10)
     for rule in ruleStrings:
         print(rule)
-        time.sleep(2)
-    time.sleep(5)
+        time.sleep(0)
+    time.sleep(0)
     clearConsole()
 
-def movingDisplay(ammount):
-    for i in range(ammount):
-        time.sleep(0.3)
-        print("\n")
-def clearConsole():
-    command = 'clear'
-    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
-        command = 'cls'
-    os.system(command)
+
 def main():
     start()
+    player1DefBoard = ShipBoard()
+    time.sleep(0)
+    player1DefBoard.setUp()
+
 if __name__ == "__main__":
     main()
