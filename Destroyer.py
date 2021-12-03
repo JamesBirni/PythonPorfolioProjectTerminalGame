@@ -4,10 +4,10 @@ from ConsoleMethods import movingDisplay
 from Board import ShipBoard
 ruleStrings = ["The rules of Destroyer is simple", "The game begins with each player chosing where to place their ships",
     "On a 10 by 10 grid going from a-j and 1-10", "Each player will have 5 ships", "1 Carrier of length 5",
-    "1 Battleship of length 4", "1 Cruiser of length 3", "1 Submarine of length 3", "1 Destroyer of length 1",
+    "1 Battleship of length 4", "1 Cruiser of length 3", "1 Submarine of length 2", "1 Destroyer of length 1",
     "After all ships are placed for player 1 and 2","The first player will go on the attack",
     "This player will choose what square on the grind to attack ex a,1(top left corner)","If the attack hit player 1 goes again",
-    "If it misses it is now player 2's turn","If player 2's attack his he goes again if not it's player 1's turn" "The game is over when one of the players have no ships remaining"]
+    "If it misses it is now player 2's turn","If player 2's attack his he goes again if not it's player 1's turn", "The game is over when one of the players have no ships remaining"]
 def start():
     print("""8888888b.  8888888888  .d8888b.  88888888888 8888888b.   .d88888b.  Y88b   d88P 8888888888 8888888b.  
 888  "Y88b 888        d88P  Y88b     888     888   Y88b d88P" "Y88b  Y88b d88P  888        888   Y88b 
@@ -27,9 +27,13 @@ def start():
 
 def main():
     start()
-    player1DefBoard = ShipBoard()
+    player1DefBoard = ShipBoard(1,2)
+    player2DefBoard = ShipBoard(2,1)
     time.sleep(0)
     player1DefBoard.setUp()
+    clearConsole()
+    input("Player 2 it is you're turn to set up you're board please press enter when ready:")
+    player2DefBoard.setUp()
 
 if __name__ == "__main__":
     main()

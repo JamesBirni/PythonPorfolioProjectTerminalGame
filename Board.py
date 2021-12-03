@@ -11,70 +11,85 @@ class Board():
             for j in range(1,11):
                 self.nestedList = self.board[i]
                 self.nestedList.append("■")
+        self.usedXY = []
     def printBoard(self):
-        print('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
+        printSlow('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
       for row in self.board]))
     def userInputToXY(self, userInput):
         spiltUserInput = userInput.split(",")
         try:
-            self.listLen2(spiltUserInput)
-            numUserInput = [Board.aToJIntoNum.get(spiltUserInput[0]),spiltUserInput[1]]
+            self.vaildInput(spiltUserInput)
+            numUserInput = [Board.aToJIntoNum.get(spiltUserInput[0].lower()),spiltUserInput[1]]
             intUserInput = listStringToInt(numUserInput)
             return intUserInput
         except ListNotEqual2:
-            print("You didn't fromate that right try again")
+            printSlow("You didn't fromate that right try again")
             return["issue"]
     def xYInBounds(self, splitVar):     
         if 1 <=splitVar[0] <=10 and 1 <=splitVar[1] <=10:
             return True
         print(splitVar)
-        print("Thats not a number between 1 and 10")
+        printSlow("Thats not a number between 1 and 10")
         time.sleep(1.5)
         return False
-    def listLen2(self, lst):
+    def vaildInput(self, lst):
         if len(lst) != 2:
+            raise ListNotEqual2
+        if not lst[1].isnumeric():
+            printSlow(f"isn't numeric:{lst[1]}")
+            raise ListNotEqual2
+        if lst[0] not in ["a","b","c","d","e","f","g","h","i","j"]:
             raise ListNotEqual2
 
 class ShipBoard(Board):
     shipLength = {"Carrier":5,"BattleShip":4,"Cruiser":3, "Submarine":2, "Destroyer":1}
-    def __init__(self):
+    def __init__(self,playerNum,enemyNum):
         super().__init__()
+        self.playerNum = playerNum
+        self.enemyNum = enemyNum
         self.ships = {"Carrier":[[],[],[],[],[]],"BattleShip":[[],[],[],[]],"Cruiser":[[],[],[]], "Submarine":[[],[],[]], "Destroyer":[[]]}
 
     def setUpCurrentShip(self, ship):
         clearConsole()
-        printSlow("Player 1 please set up you're ships make sure player 2 does not see")
-        self.xYStart = input(f"Please input you're starting point for you're {ship} ex a,7")
-        self.xYEnd = input(f"Please input you're ending point for you're ship \n this must be in a stright line from you're starting point and {ShipBoard.shipLength.get(ship)} tiles apart")
+        printSlow(f"Player {self.playerNum} please set up you're ships make sure player {self.enemyNum} does not see")
+        self.printBoard()
+        self.xYStart = input(f"Please input you're starting point for you're {ship} ex a,7: ")
+        self.xYEnd = input(f"Please input you're ending point for you're ship \nThis must be in a stright line from you're starting point and {ShipBoard.shipLength.get(ship)} tiles apart: ")
         self.intXYStart =self.userInputToXY(self.xYStart)
         self.intXYEnd = self.userInputToXY(self.xYEnd)
         if self.intXYStart[0] == "issue" or self.intXYEnd[0] == "issue":
             self.setUpCurrentShip(ship)
             return
         if not self.xYInBounds(self.intXYStart) or not self.xYInBounds(self.intXYEnd):
-            #self.setUpCurrentShip(ship)
+            printSlow("Not in bounds")
+            self.setUpCurrentShip(ship)
             return
-        if self.intXYStart[0] != self.intXYEnd[0] and self.intXYStart != self.intXYEnd[0]:
-            print("Those 2 start and end are on a diangle line please keep you're ships stright :)")
-            #self.setUpCurrentShip(ship)
+        if self.intXYStart[0] != self.intXYEnd[0] and self.intXYStart[1] != self.intXYEnd[1]:
+            printSlow("Those 2 start and end are on a diangle line please keep you're ships stright :)")
+            self.setUpCurrentShip(ship)
             return
         if self.intXYStart[0] == self.intXYEnd[0] and self.intXYEnd[1]-self.intXYStart[1]+1 != ShipBoard.shipLength[ship]:
-            print("Looks like you're ship isn't gonna fit there try again")
-            print(f"X start-end {self.intXYEnd[0]-self.intXYStart[0]}")
-            print(f"Y start-end{self.intXYEnd[1]-self.intXYStart[1]}")
-            #self.setUpCurrentShip(ship)
-            return
+            if self.intXYStart[1]-self.intXYEnd[1]+1 != ShipBoard.shipLength[ship]:    
+                printSlow("Looks like you're ship isn't gonna fit there try again")
+                self.setUpCurrentShip(ship)
+                return
         if self.intXYStart[1] == self.intXYEnd[1] and self.intXYEnd[0]-self.intXYStart[0]+1 != ShipBoard.shipLength[ship]:
-            print("Looks like you're ship isn't gonna fit there try again")
-            #self.setUpCurrentShip(ship)
-            return
+            if self.intXYStart[0]-self.intXYEnd[0]+1 != ShipBoard.shipLength[ship]:     
+                printSlow("Looks like you're ship isn't gonna fit there try again")
+                self.setUpCurrentShip(ship)
+                return
         self.x = self.intXYStart[0]
         self.y = self.intXYStart[1]
+        self.lst = self.ships.get(ship)
         for count in range(0,ShipBoard.shipLength.get(ship)):
-            lst = self.ships.get(ship)
-            lst[count].append(self.x)
-            lst[count].append(self.y)
-            print(lst)
+            if any([self.x,self.y] in x for x in self.usedXY):
+                printSlow(f"There is a ships at {[self.x,self.y]} you cannot put you're {ship} here")
+                self.setUpCurrentShip(ship)
+                return
+            self.lst[count].append(self.x)
+            self.lst[count].append(self.y)
+            self.board[self.y][self.x] = "□"
+            print(self.lst)
             if self.intXYStart[0]-self.intXYEnd[0] > 0:
                 self.x -=1
             elif self.intXYStart[0]-self.intXYEnd[0] < 0:
@@ -83,14 +98,19 @@ class ShipBoard(Board):
                 self.y -=1
             elif self.intXYStart[1]-self.intXYEnd[1] < 0:
                 self.y += 1
+        self.usedXY.append(self.lst)
         print(self.ships)
+        self.lst = []
 
     
     def setUp(self):
         self.setUpCurrentShip("Carrier")
-        #self.setUpCurrentShip("BattleShip")
-        #self.setUpCurrentShip("Cruiser")
-        #self.setUpCurrentShip("Submarine")
-        #self.setUpCurrentShip("Destroyer")
+        self.setUpCurrentShip("BattleShip")
+        self.setUpCurrentShip("Cruiser")
+        self.setUpCurrentShip("Submarine")
+        self.setUpCurrentShip("Destroyer")
+        clearConsole()
+        self.printBoard()
+        time.sleep(3)
 
 
