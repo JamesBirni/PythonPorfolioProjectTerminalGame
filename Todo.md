@@ -1,16 +1,4 @@
 To-Do List
-    -Make Board parent class
-        - Make a-j dictionary
-        - Make 2D array for the board
--Make ShipBoard class extends Board
-    - In constructor create a new dictionary with all the ships and an empty 2D array for each ship location
- - Make method to set up ships, that will fill the 2D array of the location of every ship
-    -Show board to player
-    -
- - Make method for when ship is hit on board
- - Make method for when all ships are hit
- - Make ifShipXY method that X,Y premeters to check if a ship is at an XY cordinate
--Make AttackBoard class extends Board
- - Make constuctor with that has a prameter enemy that takes in other players ShipBoard object
- - Make attack method that has x, and y as premeters, x will be a-j witch using a-j dictionary will be changed into 1-10 and y will be 1-10 we call enemy.ifShipXY(x,y) and it remains you're turn, and if this returns true we call enemy.shipHit(x,y), if not it is now the other persons turn
--Make a gameRun method in main folder 
+-Debug attack method
+-reformate how the methods are called with more text so the user has better game sense]
+-Make it look cool :)

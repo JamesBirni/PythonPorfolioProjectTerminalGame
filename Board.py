@@ -40,16 +40,16 @@ class Board():
             raise ListNotEqual2
         if lst[0] not in ["a","b","c","d","e","f","g","h","i","j"]:
             raise ListNotEqual2
-
+    
 class ShipBoard(Board):
     shipLength = {"Carrier":5,"BattleShip":4,"Cruiser":3, "Submarine":2, "Destroyer":1}
-    def __init__(self,playerNum,enemyNum):
+    def __init__(self,playerNum:int,enemyNum:int):
         super().__init__()
         self.playerNum = playerNum
         self.enemyNum = enemyNum
         self.ships = {"Carrier":[[],[],[],[],[]],"BattleShip":[[],[],[],[]],"Cruiser":[[],[],[]], "Submarine":[[],[],[]], "Destroyer":[[]]}
 
-    def setUpCurrentShip(self, ship):
+    def setUpCurrentShip(self, ship:str):
         clearConsole()
         printSlow(f"Player {self.playerNum} please set up you're ships make sure player {self.enemyNum} does not see")
         self.printBoard()
@@ -112,5 +112,44 @@ class ShipBoard(Board):
         clearConsole()
         self.printBoard()
         time.sleep(3)
+    
+    def isShipThere(self,xy):
+        printSlow(f"Used xy for def ship {self.usedXY}",8)
+        if any([xy[0],xy[1]] in c for c in self.usedXY):return True
+        return False
+    def shipHit(self,xy):
+        self.board[xy[0],xy[1]] = "▣"
+        
 
+class AttackBoard(Board):
+    def __init__(self, enemyShipObject:ShipBoard):
+        super().__init__()
+        self.points = 0
+        self.enemyShipObject = enemyShipObject
+    def attackPhase(self):
+        clearConsole()
+        self.printBoard()
+        self.xYString = input("Enter the X and Y you wish to attack ex, a,1: ")
+        self.intXY = self.userInputToXY(self.xYString)
+        if not self.xYInBounds(self.intXY):
+            printSlow("This is not in bounds of a-j and 1-10")
+            return self.attackPhase()
+        printSlow(f"Used xy in attack{self.usedXY}")
+        if any([self.intXY[0],self.intXY[1]] in i for i in self.usedXY):
+            printSlow("We have already tried there")
+            return self.attackPhase
+        self.usedXY.append(self.intXY)
+        if self.enemyShipObject.isShipThere(self.intXY):
+            printSlow(f"This is X {self.intXY[0]} This is Y {self.intXY[1]}")
+            self.board[self.intXY[0],self.intXY[1]] = "▣"
+            printSlow("HIT")
+            self.points +=1
+            self.enemyShipObject.shipHit(self.intXY)
+            return True
+        printSlow("Miss")
+        self.board[self.intXY[0]][self.intXY[1]] = "⧄"
+        return False
+        
+
+        
 
