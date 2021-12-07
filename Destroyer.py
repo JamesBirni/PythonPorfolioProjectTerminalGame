@@ -20,9 +20,8 @@ def start():
 8888888P"  8888888888  "Y8888P"      888     888   T88b  "Y88888P"      888     8888888888 888   T88b """)
     movingDisplay(10)
     for rule in ruleStrings:
-        print(rule)
-        time.sleep(0)
-    time.sleep(0)
+        printSlow(rule,2)
+    time.sleep(2)
     clearConsole()
 
 
@@ -47,6 +46,8 @@ def player1Attack(player1Att:AttackBoard,player1Def:ShipBoard, player2Att:Attack
         printSlow("Game over player 1 won")
         return    
     input("Player 1 it is you're turn to attack when you are ready press enter: ")
+    player1Def.printBoard()
+    input("Player 1 these are you're ships")
     if player1Att.attackPhase():
         player1Attack(player1Att,player1Def, player2Att,player2Def)
         return
@@ -58,6 +59,8 @@ def player2Attack(player2Att,player2Def,player1Att,player1Def):
         printSlow("Game over player 2 won")
         return    
     input("Player 2 it is you're turn to attack when you are ready press enter: ")
+    player2Def.printBoard()
+    input("Player 2 these are you're ships")
     if player2Att.attackPhase():
         player2Attack(player2Att,player2Def,player1Att,player1Def)
         return

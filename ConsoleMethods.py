@@ -10,5 +10,5 @@ def printSlow(thisPrint,timeAmmount=0.5):
     time.sleep(timeAmmount)
 def movingDisplay(ammount):
     for i in range(ammount):
-        time.sleep(0.0)
+        time.sleep(0.2)
         print("\n")

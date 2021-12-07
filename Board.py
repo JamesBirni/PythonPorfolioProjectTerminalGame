@@ -16,6 +16,8 @@ class Board():
         printSlow('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
       for row in self.board]))
     def userInputToXY(self, userInput):
+        if type(userInput) != str:
+            return "issue"
         spiltUserInput = userInput.split(",")
         try:
             self.vaildInput(spiltUserInput)
@@ -54,7 +56,10 @@ class ShipBoard(Board):
         printSlow(f"Player {self.playerNum} please set up you're ships make sure player {self.enemyNum} does not see")
         self.printBoard()
         self.xYStart = input(f"Please input you're starting point for you're {ship} ex a,7: ")
-        self.xYEnd = input(f"Please input you're ending point for you're ship \nThis must be in a stright line from you're starting point and {ShipBoard.shipLength.get(ship)} tiles apart: ")
+        if ship == "Destroyer":
+            self.xYEnd = self.xYStart
+        else:
+            self.xYEnd = input(f"Please input you're ending point for you're ship \nThis must be in a stright line from you're starting point and {ShipBoard.shipLength.get(ship)} tiles apart: ")
         self.intXYStart =self.userInputToXY(self.xYStart)
         self.intXYEnd = self.userInputToXY(self.xYEnd)
         if self.intXYStart[0] == "issue" or self.intXYEnd[0] == "issue":
@@ -101,6 +106,7 @@ class ShipBoard(Board):
         self.usedXY.append(self.lst)
         print(self.ships)
         self.lst = []
+        clearConsole()
 
     
     def setUp(self):
@@ -109,16 +115,12 @@ class ShipBoard(Board):
         self.setUpCurrentShip("Cruiser")
         self.setUpCurrentShip("Submarine")
         self.setUpCurrentShip("Destroyer")
-        clearConsole()
-        self.printBoard()
-        time.sleep(3)
     
     def isShipThere(self,xy):
-        printSlow(f"Used xy for def ship {self.usedXY}",8)
         if any([xy[0],xy[1]] in c for c in self.usedXY):return True
         return False
     def shipHit(self,xy):
-        self.board[xy[0],xy[1]] = "▣"
+        self.board[xy[0]][xy[1]] = "▣"
         
 
 class AttackBoard(Board):
@@ -131,23 +133,24 @@ class AttackBoard(Board):
         self.printBoard()
         self.xYString = input("Enter the X and Y you wish to attack ex, a,1: ")
         self.intXY = self.userInputToXY(self.xYString)
+        if self.intXY[0] == "issue":
+            self.attackPhase()
+            return
         if not self.xYInBounds(self.intXY):
             printSlow("This is not in bounds of a-j and 1-10")
             return self.attackPhase()
-        printSlow(f"Used xy in attack{self.usedXY}")
-        if any([self.intXY[0],self.intXY[1]] in i for i in self.usedXY):
-            printSlow("We have already tried there")
-            return self.attackPhase
+        if any(self.intXY == i for i in self.usedXY):
+            printSlow("We have already tried there",2)
+            return self.attackPhase()
         self.usedXY.append(self.intXY)
         if self.enemyShipObject.isShipThere(self.intXY):
-            printSlow(f"This is X {self.intXY[0]} This is Y {self.intXY[1]}")
-            self.board[self.intXY[0],self.intXY[1]] = "▣"
+            self.board[self.intXY[1]][self.intXY[0]] = "▣"
             printSlow("HIT")
             self.points +=1
             self.enemyShipObject.shipHit(self.intXY)
             return True
         printSlow("Miss")
-        self.board[self.intXY[0]][self.intXY[1]] = "⧄"
+        self.board[self.intXY[1]][self.intXY[0]] = "⧄"
         return False
         
 
